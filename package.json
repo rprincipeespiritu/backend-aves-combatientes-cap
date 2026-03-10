@@ -5,6 +5,7 @@
   "dependencies": {
     "@cap-js/postgres": "^2.1.3",
     "@sap/cds": "^9",
+    "@sap/cds-dk": "^9.8.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
