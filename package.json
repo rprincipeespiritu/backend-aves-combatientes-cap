@@ -30,7 +30,21 @@
         "kind": "postgres",
         "impl": "@cap-js/postgres",
         "credentials": {
-          "url": "${DATABASE_URL}"
+          "host": {
+            "$env": "PGHOST"
+          },
+          "port": {
+            "$env": "PGPORT"
+          },
+          "user": {
+            "$env": "PGUSER"
+          },
+          "password": {
+            "$env": "PGPASSWORD"
+          },
+          "database": {
+            "$env": "PGDATABASE"
+          }
         }
       },
       "auth": {
