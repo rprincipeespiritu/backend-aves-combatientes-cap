@@ -17,7 +17,7 @@
     "sqlite3": "^5.1.7"
   },
   "scripts": {
-    "start": "npm run migrate && cds-serve",
+    "start": "cds deploy --to postgres && cds-serve --port $PORT",
     "migrate": "cds deploy --to postgres",
     "watch": "cds watch",
     "deploy": "cds deploy --to postgres",
@@ -30,11 +30,21 @@
         "kind": "postgres",
         "impl": "@cap-js/postgres",
         "credentials": {
-          "host": "localhost",
-          "port": 5432,
-          "user": "postgres",
-          "password": "1123581321",
-          "database": "aves_combatientes_db"
+          "host": {
+            "$env": "PGHOST"
+          },
+          "port": {
+            "$env": "PGPORT"
+          },
+          "user": {
+            "$env": "PGUSER"
+          },
+          "password": {
+            "$env": "PGPASSWORD"
+          },
+          "database": {
+            "$env": "PGDATABASE"
+          }
         }
       },
       "auth": {
