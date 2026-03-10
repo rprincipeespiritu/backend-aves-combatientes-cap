@@ -30,25 +30,11 @@
         "kind": "postgres",
         "impl": "@cap-js/postgres",
         "credentials": {
-          "host": {
-            "$env": "DB_HOST",
-            "$default": "localhost"
-          },
-          "port": {
-            "$env": "DB_PORT",
-            "$default": "5432"
-          },
-          "user": {
-            "$env": "DB_USER",
-            "$default": "postgres"
-          },
-          "password": {
-            "$env": "DB_PASSWORD"
-          },
-          "database": {
-            "$env": "DB_NAME",
-            "$default": "aves_combatientes_db"
-          }
+          "host": "localhost",
+          "port": 5432,
+          "user": "postgres",
+          "password": "1123581321",
+          "database": "aves_combatientes_db"
         }
       },
       "auth": {
