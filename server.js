@@ -6,11 +6,11 @@ const cors = require('cors');
 // Resolver DATABASE_URL de Railway para CAP
 if (process.env.DATABASE_URL) {
     const url = new URL(process.env.DATABASE_URL);
-    process.env.DB_HOST = url.hostname;
-    process.env.DB_PORT = url.port;
-    process.env.DB_USER = url.username;
-    process.env.DB_PASSWORD = url.password;
-    process.env.DB_NAME = url.pathname.replace('/', '');
+    process.env.PGHOST = url.hostname;
+    process.env.PGPORT = url.port;
+    process.env.PGUSER = url.username;
+    process.env.PGPASSWORD = url.password;
+    process.env.PGDATABASE = url.pathname.replace('/', '');
 }
 
 const corsOptions = {
