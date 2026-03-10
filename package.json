@@ -1,0 +1,57 @@
+{
+  "name": "backend-aves-combatientes",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "dependencies": {
+    "@cap-js/postgres": "^2.1.3",
+    "@sap/cds": "^9",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^4",
+    "jsonwebtoken": "^9.0.3"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^2",
+    "sqlite3": "^5.1.7"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "watch": "cds watch",
+    "deploy": "cds deploy --to postgres",
+    "build": "cds build",
+    "test": "jest"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "postgres",
+        "impl": "@cap-js/postgres",
+        "credentials": {
+          "host": {
+            "$env": "DB_HOST",
+            "$default": "localhost"
+          },
+          "port": {
+            "$env": "DB_PORT",
+            "$default": "5432"
+          },
+          "user": {
+            "$env": "DB_USER",
+            "$default": "postgres"
+          },
+          "password": {
+            "$env": "DB_PASSWORD"
+          },
+          "database": {
+            "$env": "DB_NAME",
+            "$default": "aves_combatientes_db"
+          }
+        }
+      },
+      "auth": {
+        "kind": "dummy"
+      }
+    }
+  }
+}

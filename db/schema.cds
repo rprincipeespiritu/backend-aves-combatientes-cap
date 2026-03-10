@@ -1,0 +1,391 @@
+namespace ave.combatiente;
+
+using {
+    cuid,
+    managed
+} from '@sap/cds/common';
+
+//============================================
+// ENTIDADES BASE
+//============================================
+
+// Maestras de configuración
+entity Raza : cuid {
+    nombre          : String(50) @mandatory;
+    descripcion     : String(500);
+    origen          : String(100);
+    caracteristicas : LargeString;
+    activo          : Boolean default true;
+    aves            : Association to many Ave
+                          on aves.raza = $self;
+}
+
+entity Color : cuid {
+    nombre      : String(50) @mandatory;
+    codigoHex   : String(7); // #FFFFFF
+    descripcion : String(200);
+    activo      : Boolean default true;
+}
+
+entity TipoAve : cuid {
+    codigo      : String(10) @mandatory;
+    nombre      : String(50) @mandatory;
+    descripcion : String(200);
+    activo      : Boolean default true;
+}
+
+//============================================
+// GESTIÓN DE AVES
+//============================================
+
+entity Ave : cuid, managed {
+    // Identificación
+    placa              : String(20) @mandatory; // Placa única
+    nombre             : String(100);
+    apodo              : String(50);
+
+    // Características físicas
+    raza               : Association to Raza;
+    color              : Association to Color;
+    tipoAve            : Association to TipoAve;
+    sexo               : String(1)  @assert.enum: {
+        M,
+        H
+    }; // Macho/Hembra
+
+    // Fechas importantes
+    fechaNacimiento    : Date;
+    fechaCompra        : Date;
+    fechaFallecimiento : Date;
+    edad               : Integer; // Calculado
+
+    // Genealogía
+    padre              : Association to Ave;
+    madre              : Association to Ave;
+    // hijos              : Association to many Ave
+    //                          on hijos.padre = $self
+    //                          or hijos.madre = $self;
+
+    // Información adicional
+    procedencia        : String(200);
+    criador            : String(200);
+    valorCompra        : Decimal(10, 2);
+    valorActual        : Decimal(10, 2);
+    observaciones      : LargeString;
+
+    // Estado
+    estado             : String(20) @assert.enum: {
+        ACTIVO,
+        VENDIDO,
+        FALLECIDO,
+        PRESTADO
+    };
+    categoria          : String(20) @assert.enum: {
+        BUENO,
+        EXCELENTE,
+        EXTRAORDINARIO
+    };
+    cruce              : String(20) @assert.enum: {
+        ABIERTO,
+        INBREEDING
+    };
+    padrote            : Boolean;
+    ubicacion          : String(200);
+
+    // Relaciones
+    pesajes            : Composition of many Pesaje
+                             on pesajes.ave = $self;
+    peleas             : Association to many Pelea
+                             on peleas.ave = $self;
+    incubacion         : Association to Incubacion;
+    fotos              : Composition of many FotoAve
+                             on fotos.ave = $self;
+    videos             : Composition of many VideoAve
+                             on videos.ave = $self;
+    documentos         : Composition of many DocumentoAve
+                             on documentos.ave = $self;
+
+    // SharePoint
+    sharepointFolderId : String(200);
+    sharepointUrl      : String(500);
+}
+
+//============================================
+// PESAJE Y SEGUIMIENTO
+//============================================
+
+entity Pesaje : cuid, managed {
+    ave                : Association to Ave @mandatory;
+    fecha              : DateTime           @mandatory;
+    peso               : Decimal(5, 2)      @mandatory; // kg
+    altura             : Decimal(5, 2); // cm
+    circunferencia     : Decimal(5, 2); // cm
+
+    // Mediciones adicionales
+    largoEspolon       : Decimal(4, 2);
+    anchoPecho         : Decimal(5, 2);
+
+    // Condición física
+    condicionFisica    : String(20)         @assert.enum: {
+        EXCELENTE,
+        BUENA,
+        REGULAR,
+        MALA
+    };
+    observaciones      : String(500);
+
+    // Veterinaria
+    temperatura        : Decimal(3, 1);
+    frecuenciaCardiaca : Integer;
+
+    // Registro
+    responsable        : Association to Usuario;
+}
+
+//============================================
+// PELEAS Y COMPETENCIAS
+//============================================
+
+entity Pelea : cuid, managed {
+    ave                 : Association to Ave @mandatory;
+    fecha               : DateTime           @mandatory;
+    lugar               : String(200);
+    evento              : String(200);
+
+    // Oponente
+    nombreOponente      : String(100);
+    procedenciaOponente : String(200);
+
+    // Resultado
+    resultado           : String(20)         @assert.enum: {
+        VICTORIA,
+        DERROTA,
+        EMPATE,
+        DESCALIFICADO
+    };
+    tiempoRonda         : Integer; // minutos
+    metodoVictoria      : String(100); // KO, Puntos, Abandono, etc.
+
+    // Premios
+    premioDinero        : Decimal(10, 2);
+    premioTrofeo        : String(200);
+
+    // Evaluación
+    rendimiento         : Integer; // 1-10
+    observaciones       : LargeString;
+    lesiones            : String(500);
+
+    // Medios
+    videoUrl            : String(500);
+    fotos               : Composition of many FotoPelea
+                              on fotos.pelea = $self;
+}
+
+entity FotoPelea : cuid, managed {
+    pelea         : Association to Pelea;
+    titulo        : String(200);
+    descripcion   : String(500);
+    urlSharepoint : String(500);
+    thumbnailUrl  : String(500);
+}
+
+//============================================
+// INCUBACIÓN Y REPRODUCCIÓN
+//============================================
+
+entity Incubacion : cuid, managed {
+    codigo                  : String(20) @mandatory;
+    ave                     : Association to Ave;
+    // Padres
+    padre                   : Association to Ave;
+    madre                   : Association to Ave;
+
+    // Fechas
+    fechaIncubacion         : Date       @mandatory;
+    fechaEclosion           : Date;
+    fechaFinalizacion       : Date;
+
+    // Huevos
+    totalHuevos             : Integer;
+    huevosFertiles          : Integer;
+    huevosEclosionados      : Integer;
+    huevosNoFertiles        : Integer;
+
+    // Condiciones
+    temperatura             : Decimal(4, 2);
+    humedad                 : Decimal(5, 2);
+
+    // Resultados
+    polluelosNacidos        : Integer;
+    polluelosSobrevivientes : Integer;
+
+    // Estado
+    estado                  : String(20) @assert.enum: {
+        ACTIVA,
+        COMPLETADA,
+        CANCELADA
+    };
+    observaciones           : LargeString;
+
+    // Polluelos generados
+    polluelos               : Association to many Ave
+                                  on polluelos.incubacion = $self;
+}
+
+// Extender Ave para incluir incubación
+// extend Ave {
+//     incubacion : Association to Incubacion;
+// }
+
+//============================================
+// ALIMENTACIÓN Y TRATAMIENTOS
+//============================================
+
+entity Alimentacion : cuid, managed {
+    ave           : Association to Ave;
+    fecha         : DateTime @mandatory;
+    tipoAlimento  : String(200);
+    cantidad      : Decimal(5, 2);
+    unidadMedida  : String(20);
+    observaciones : String(500);
+}
+
+entity Tratamiento : cuid, managed {
+    ave               : Association to Ave @mandatory;
+    fecha             : DateTime           @mandatory;
+    tipoTratamiento   : String(20)         @assert.enum: {
+        VACUNA,
+        DESPARASITACION,
+        MEDICAMENTO,
+        VITAMINAS,
+        OTRO
+    };
+
+    // Detalles del tratamiento
+    medicamento       : String(200);
+    dosis             : String(100);
+    viaAdministracion : String(50);
+
+    // Duración
+    fechaInicio       : Date;
+    fechaFin          : Date;
+    frecuencia        : String(100);
+
+    // Responsable
+    veterinario       : String(200);
+    diagnostico       : String(500);
+    observaciones     : LargeString;
+
+    // Costos
+    costo             : Decimal(10, 2);
+}
+
+//============================================
+// FINANZAS
+//============================================
+
+entity Transaccion : cuid, managed {
+    fecha             : DateTime       @mandatory;
+    tipo              : String(20)     @assert.enum: {
+        INGRESO,
+        EGRESO
+    };
+    categoria         : String(50)     @mandatory;
+
+    // Relacionado a
+    ave               : Association to Ave;
+    pelea             : Association to Pelea;
+
+    // Detalles financieros
+    concepto          : String(200)    @mandatory;
+    monto             : Decimal(10, 2) @mandatory;
+    moneda            : String(3) default 'PEN';
+    metodoPago        : String(50);
+
+    // Documentación
+    numeroComprobante : String(50);
+    documentoUrl      : String(500);
+
+    observaciones     : String(500);
+}
+
+//============================================
+// MULTIMEDIA
+//============================================
+
+entity FotoAve : cuid, managed {
+    ave           : Association to Ave;
+    titulo        : String(200);
+    descripcion   : String(500);
+    fechaFoto     : Date;
+    urlSharepoint : String(500) @mandatory;
+    thumbnailUrl  : String(500);
+    esPrincipal   : Boolean default false;
+}
+
+entity VideoAve : cuid, managed {
+    ave           : Association to Ave;
+    titulo        : String(200);
+    descripcion   : String(500);
+    fechaVideo    : Date;
+    urlSharepoint : String(500) @mandatory;
+    duracion      : Integer; // segundos
+}
+
+entity DocumentoAve : cuid, managed {
+    ave           : Association to Ave;
+    titulo        : String(200);
+    tipoDocumento : String(50);
+    descripcion   : String(500);
+    urlSharepoint : String(500) @mandatory;
+    tamanio       : Integer; // bytes
+}
+
+//============================================
+// USUARIOS Y SEGURIDAD
+//============================================
+
+entity Usuario : cuid, managed {
+    username       : String(50) @mandatory;
+    email          : String(100);
+    password       : String(255); // hash bcrypt
+    nombreCompleto : String(200);
+    telefono       : String(20);
+
+    // Rol
+    rol            : Association to Rol;
+
+    // Estado
+    activo         : Boolean default true;
+    ultimoAcceso   : DateTime;
+
+    // Preferencias
+    preferencias   : LargeString; // JSON
+}
+
+entity Rol : cuid {
+    codigo      : String(20) @mandatory;
+    nombre      : String(50) @mandatory;
+    descripcion : String(200);
+    permisos    : LargeString; // JSON con permisos
+    activo      : Boolean default true;
+}
+
+//============================================
+// AUDITORÍA
+//============================================
+
+entity HistorialCambios : cuid, managed {
+    entidad       : String(50) @mandatory;
+    entidadId     : String(36) @mandatory;
+    campo         : String(100);
+    valorAnterior : String(500);
+    valorNuevo    : String(500);
+    usuario       : Association to Usuario;
+    fecha         : DateTime   @mandatory;
+    accion        : String(20) @assert.enum: {
+        CREATE,
+        UPDATE,
+        DELETE
+    };
+}
