@@ -16,7 +16,8 @@
     "sqlite3": "^5.1.7"
   },
   "scripts": {
-    "start": "cds-serve",
+    "start": "npm run migrate && cds-serve",
+    "migrate": "cds deploy --to postgres",
     "watch": "cds watch",
     "deploy": "cds deploy --to postgres",
     "build": "cds build",
