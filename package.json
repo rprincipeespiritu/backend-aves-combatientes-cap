@@ -18,9 +18,10 @@
     "sqlite3": "^5.1.7"
   },
   "scripts": {
-    "start": "cds deploy --to postgres && cds run",
+    "start": "npx cds deploy --profile pg && npx cds serve",
+    "deploy": "npx cds deploy --profile pg",
     "watch": "cds watch",
-    "deploy": "cds deploy --to postgres"
+    "build": "cds build"
   },
   "cds": {
     "requires": {

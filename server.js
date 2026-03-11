@@ -5,12 +5,13 @@ const cors = require('cors');
 
 // Resolver DATABASE_URL de Railway para CAP
 if (process.env.DATABASE_URL) {
-    const url = new URL(process.env.DATABASE_URL);
-    process.env.PGHOST = url.hostname;
-    process.env.PGPORT = url.port;
-    process.env.PGUSER = url.username;
-    process.env.PGPASSWORD = url.password;
-    process.env.PGDATABASE = url.pathname.replace('/', '');
+    const dbUrl = new URL(process.env.DATABASE_URL);
+
+    process.env.PGHOST = dbUrl.hostname;
+    process.env.PGPORT = dbUrl.port;
+    process.env.PGUSER = dbUrl.username;
+    process.env.PGPASSWORD = dbUrl.password;
+    process.env.PGDATABASE = dbUrl.pathname.substring(1);
 }
 
 const corsOptions = {
@@ -21,8 +22,8 @@ const corsOptions = {
 };
 
 cds.on('bootstrap', (app) => {
-  app.use(cors(corsOptions));
-  app.options('*', cors(corsOptions)); // preflight
+    app.use(cors(corsOptions));
+    app.options('*', cors(corsOptions)); // preflight
 });
 
 module.exports = cds.server;
