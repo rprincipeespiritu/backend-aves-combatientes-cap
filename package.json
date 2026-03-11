@@ -10,42 +10,22 @@
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^4",
-    "jsonwebtoken": "^9.0.3"
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.20.0"
   },
   "devDependencies": {
     "@cap-js/sqlite": "^2",
     "sqlite3": "^5.1.7"
   },
   "scripts": {
-    "start": "cds deploy --to postgres && cds-serve --port $PORT",
-    "migrate": "cds deploy --to postgres",
+    "start": "cds deploy --to postgres && cds run",
     "watch": "cds watch",
-    "deploy": "cds deploy --to postgres",
-    "build": "cds build",
-    "test": "jest"
+    "deploy": "cds deploy --to postgres"
   },
   "cds": {
     "requires": {
       "db": {
-        "kind": "postgres",
-        "impl": "@cap-js/postgres",
-        "credentials": {
-          "host": {
-            "$env": "PGHOST"
-          },
-          "port": {
-            "$env": "PGPORT"
-          },
-          "user": {
-            "$env": "PGUSER"
-          },
-          "password": {
-            "$env": "PGPASSWORD"
-          },
-          "database": {
-            "$env": "PGDATABASE"
-          }
-        }
+        "kind": "postgres"
       },
       "auth": {
         "kind": "dummy"
