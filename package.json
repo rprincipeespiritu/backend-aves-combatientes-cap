@@ -17,7 +17,7 @@
     "sqlite3": "^5.1.7"
   },
   "scripts": {
-    "start": "npx cds deploy --profile pg && cds-serve --port $PORT",
+    "start": "cds deploy --to postgres && cds-serve --port $PORT",
     "migrate": "cds deploy --to postgres",
     "watch": "cds watch",
     "deploy": "cds deploy --to postgres",
