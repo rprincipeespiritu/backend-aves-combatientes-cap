@@ -26,7 +26,9 @@
   "cds": {
     "requires": {
       "db": {
-        "kind": "postgres"
+        "kind": "postgres",
+        "impl": "@cap-js/postgres",
+        "credentials": {}
       },
       "auth": {
         "kind": "dummy"

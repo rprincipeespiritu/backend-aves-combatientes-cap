@@ -3,22 +3,22 @@ require('dotenv').config();
 
 if (process.env.DATABASE_URL) {
     const url = new URL(process.env.DATABASE_URL);
-    process.env.PGHOST     = url.hostname;
-    process.env.PGPORT     = url.port;
-    process.env.PGUSER     = url.username;
-    process.env.PGPASSWORD = url.password;
-    process.env.PGDATABASE = url.pathname.replace('/', '');
+    
+    // CAP lee estas variables CDS_ automáticamente
+    process.env.CDS_REQUIRES_DB_KIND                    = 'postgres';
+    process.env.CDS_REQUIRES_DB_IMPL                    = '@cap-js/postgres';
+    process.env.CDS_REQUIRES_DB_CREDENTIALS_HOST        = url.hostname;
+    process.env.CDS_REQUIRES_DB_CREDENTIALS_PORT        = url.port;
+    process.env.CDS_REQUIRES_DB_CREDENTIALS_USER        = url.username;
+    process.env.CDS_REQUIRES_DB_CREDENTIALS_PASSWORD    = url.password;
+    process.env.CDS_REQUIRES_DB_CREDENTIALS_DATABASE    = url.pathname.replace('/', '');
+    
+    console.log(`Deploying to: ${url.hostname}:${url.port}${url.pathname}`);
 }
 
 const { execSync } = require('child_process');
-
-const { PGUSER, PGPASSWORD, PGHOST, PGPORT, PGDATABASE } = process.env;
-const connectionUrl = `postgres://${PGUSER}:${encodeURIComponent(PGPASSWORD)}@${PGHOST}:${PGPORT}/${PGDATABASE}`;
-
-console.log(`Deploying to: ${PGHOST}:${PGPORT}/${PGDATABASE}`);
-
-// Deploy con URL directa — evita leer package.json credentials
-execSync(`npx cds deploy --to ${connectionUrl}`, { 
-    stdio: 'inherit',
-    env: process.env
+// --to postgres = solo el KIND, no la URL completa
+execSync('npx cds deploy --to postgres', { 
+    stdio: 'inherit', 
+    env: process.env 
 });
