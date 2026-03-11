@@ -1,19 +1,29 @@
-// server.js
 require('dotenv').config();
 
-// Parsear DATABASE_URL para RUNTIME (igual que deploy.js)
 if (process.env.DATABASE_URL) {
     const url = new URL(process.env.DATABASE_URL);
-    process.env.CDS_REQUIRES_DB_KIND                 = 'postgres';
-    process.env.CDS_REQUIRES_DB_IMPL                 = '@cap-js/postgres';
-    process.env.CDS_REQUIRES_DB_CREDENTIALS_HOST     = url.hostname;
-    process.env.CDS_REQUIRES_DB_CREDENTIALS_PORT     = url.port;
-    process.env.CDS_REQUIRES_DB_CREDENTIALS_USER     = url.username;
-    process.env.CDS_REQUIRES_DB_CREDENTIALS_PASSWORD = url.password;
-    process.env.CDS_REQUIRES_DB_CREDENTIALS_DATABASE = url.pathname.replace('/', '');
+    const fs = require('fs');
+    
+    const cdsrc = {
+        requires: {
+            db: {
+                kind: 'postgres',
+                impl: '@cap-js/postgres',
+                credentials: {
+                    host: url.hostname,
+                    port: parseInt(url.port),
+                    user: url.username,
+                    password: url.password,
+                    database: url.pathname.replace('/', '')
+                }
+            }
+        }
+    };
+    fs.writeFileSync('.cdsrc.json', JSON.stringify(cdsrc, null, 2));
+    console.log(`DB config written for: ${url.hostname}:${url.port}${url.pathname}`);
 }
 
-const cds = require('@sap/cds'); // 👈 DESPUÉS del parseo
+const cds = require('@sap/cds'); // DESPUÉS de escribir .cdsrc.json
 const cors = require('cors');
 
 const corsOptions = {
