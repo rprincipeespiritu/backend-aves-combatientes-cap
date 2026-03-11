@@ -3,17 +3,6 @@ require('dotenv').config();
 const cds = require('@sap/cds');
 const cors = require('cors');
 
-// Resolver DATABASE_URL de Railway para CAP
-if (process.env.DATABASE_URL) {
-    const dbUrl = new URL(process.env.DATABASE_URL);
-
-    process.env.PGHOST = dbUrl.hostname;
-    process.env.PGPORT = dbUrl.port;
-    process.env.PGUSER = dbUrl.username;
-    process.env.PGPASSWORD = dbUrl.password;
-    process.env.PGDATABASE = dbUrl.pathname.substring(1);
-}
-
 const corsOptions = {
     origin: process.env.CORS_ORIGIN || 'http://localhost:8080',
     allowedHeaders: ['Content-Type', 'Authorization'],

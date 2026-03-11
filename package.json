@@ -18,7 +18,7 @@
     "sqlite3": "^5.1.7"
   },
   "scripts": {
-    "start": "npx cds deploy --profile pg && npx cds serve",
+    "start": "node deploy.js && npx cds-serve --port $PORT",
     "deploy": "npx cds deploy --profile pg",
     "watch": "cds watch",
     "build": "cds build"
@@ -26,7 +26,24 @@
   "cds": {
     "requires": {
       "db": {
-        "kind": "postgres"
+        "kind": "postgres",
+        "credentials": {
+          "host": {
+            "$env": "PGHOST"
+          },
+          "port": {
+            "$env": "PGPORT"
+          },
+          "user": {
+            "$env": "PGUSER"
+          },
+          "password": {
+            "$env": "PGPASSWORD"
+          },
+          "database": {
+            "$env": "PGDATABASE"
+          }
+        }
       },
       "auth": {
         "kind": "dummy"
