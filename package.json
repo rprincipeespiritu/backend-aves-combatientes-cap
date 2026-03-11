@@ -26,24 +26,7 @@
   "cds": {
     "requires": {
       "db": {
-        "kind": "postgres",
-        "credentials": {
-          "host": {
-            "$env": "PGHOST"
-          },
-          "port": {
-            "$env": "PGPORT"
-          },
-          "user": {
-            "$env": "PGUSER"
-          },
-          "password": {
-            "$env": "PGPASSWORD"
-          },
-          "database": {
-            "$env": "PGDATABASE"
-          }
-        }
+        "kind": "postgres"
       },
       "auth": {
         "kind": "dummy"

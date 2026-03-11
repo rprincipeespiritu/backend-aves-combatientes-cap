@@ -1,7 +1,6 @@
 // deploy.js
 require('dotenv').config();
 
-// Parsear DATABASE_URL ANTES del deploy
 if (process.env.DATABASE_URL) {
     const url = new URL(process.env.DATABASE_URL);
     process.env.PGHOST     = url.hostname;
@@ -9,9 +8,17 @@ if (process.env.DATABASE_URL) {
     process.env.PGUSER     = url.username;
     process.env.PGPASSWORD = url.password;
     process.env.PGDATABASE = url.pathname.replace('/', '');
-    
-    console.log(`Connecting to: ${url.hostname}:${url.port}/${url.pathname.replace('/', '')}`);
 }
 
 const { execSync } = require('child_process');
-execSync('npx cds deploy --to postgres', { stdio: 'inherit' });
+
+const { PGUSER, PGPASSWORD, PGHOST, PGPORT, PGDATABASE } = process.env;
+const connectionUrl = `postgres://${PGUSER}:${encodeURIComponent(PGPASSWORD)}@${PGHOST}:${PGPORT}/${PGDATABASE}`;
+
+console.log(`Deploying to: ${PGHOST}:${PGPORT}/${PGDATABASE}`);
+
+// Deploy con URL directa — evita leer package.json credentials
+execSync(`npx cds deploy --to ${connectionUrl}`, { 
+    stdio: 'inherit',
+    env: process.env
+});
