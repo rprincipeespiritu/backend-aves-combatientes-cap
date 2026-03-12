@@ -18,17 +18,14 @@
     "sqlite3": "^5.1.7"
   },
   "scripts": {
-    "start": "node deploy.js && npx cds-serve --port $PORT",
-    "deploy": "npx cds deploy --profile pg",
+    "start": "cds deploy && cds serve",
     "watch": "cds watch",
     "build": "cds build"
   },
   "cds": {
     "requires": {
       "db": {
-        "kind": "postgres",
-        "impl": "@cap-js/postgres",
-        "credentials": {}
+        "kind": "postgres"
       },
       "auth": {
         "kind": "dummy"

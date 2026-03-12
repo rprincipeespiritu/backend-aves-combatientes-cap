@@ -24,7 +24,6 @@ if (process.env.DATABASE_URL) {
 }
 
 const cds = require('@sap/cds'); // DESPUÉS de escribir .cdsrc.json
-const cors = require('cors');
 
 const corsOptions = {
     origin: process.env.CORS_ORIGIN || '*',
@@ -34,8 +33,19 @@ const corsOptions = {
 };
 
 cds.on('bootstrap', (app) => {
+    const cors = require('cors');
     app.use(cors(corsOptions));
     app.options('*', cors(corsOptions));
 });
+
+(async () => {
+  try {
+    const cds = require('@sap/cds')
+    await cds.deploy()
+    console.log("Database deployed successfully")
+  } catch (err) {
+    console.error("Deploy error:", err)
+  }
+})()
 
 module.exports = cds.server;
