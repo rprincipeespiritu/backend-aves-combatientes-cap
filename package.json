@@ -5,30 +5,28 @@
   "dependencies": {
     "@cap-js/postgres": "^2.1.3",
     "@sap/cds": "^9",
-    "@sap/cds-dk": "^9.8.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^4",
-    "jsonwebtoken": "^9.0.3",
-    "pg": "^8.20.0"
+    "jsonwebtoken": "^9.0.3"
   },
   "devDependencies": {
+    "@sap/cds-dk": "^9.8.0",
     "@cap-js/sqlite": "^2",
     "sqlite3": "^5.1.7"
   },
   "scripts": {
-    "start": "cds deploy && cds serve",
+    "start": "cds-serve",
     "watch": "cds watch",
-    "build": "cds build"
+    "build": "cds build",
+    "deploy:pg": "cds deploy --to postgres",
+    "deploy:railway": "node deploy.js"
   },
   "cds": {
     "requires": {
       "db": {
         "kind": "postgres"
-      },
-      "auth": {
-        "kind": "dummy"
       }
     }
   }
