@@ -28,6 +28,11 @@
     "requires": {
       "db": {
         "kind": "postgres"
+      },
+      "auth": {
+        "[production]": {
+          "kind": "dummy"
+        }
       }
     }
   }
