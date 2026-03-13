@@ -19,8 +19,7 @@
   },
   "scripts": {
     "start": "cds-serve",
-    "deploy": "cds deploy --profile pg",
-    "start:prod": "npm run deploy && npm start"
+    "deploy": "cds deploy --profile pg"
   },
   "cds": {
     "requires": {
