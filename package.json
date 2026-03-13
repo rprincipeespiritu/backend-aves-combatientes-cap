@@ -19,10 +19,8 @@
   },
   "scripts": {
     "start": "cds-serve",
-    "watch": "cds watch",
-    "build": "cds build",
-    "deploy:pg": "cds deploy --to postgres",
-    "deploy:railway": "node deploy.js"
+    "deploy": "cds deploy --profile pg",
+    "start:prod": "npm run deploy && npm start"
   },
   "cds": {
     "requires": {
