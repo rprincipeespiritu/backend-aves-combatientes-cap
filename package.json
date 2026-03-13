@@ -24,8 +24,19 @@
   },
   "cds": {
     "requires": {
-      "db": {
-        "kind": "postgres"
+      "[pg]": {
+        "db": {
+          "kind": "postgres",
+          "impl": "@cap-js/postgres",
+          "credentials": {
+            "host": "{env:PGHOST}",
+            "port": "{env:PGPORT}",
+            "database": "{env:PGDATABASE}",
+            "user": "{env:PGUSER}",
+            "password": "{env:PGPASSWORD}",
+            "ssl": true
+          }
+        }
       },
       "auth": {
         "[production]": {
